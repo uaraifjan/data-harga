@@ -1,0 +1,74 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manajemen Harga</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h2>💰 Manajemen Harga Barang</h2>
+
+  <input type="text" id="nama" placeholder="Nama Barang">
+  <input type="number" id="hargaAwal" placeholder="Harga Awal">
+  <input type="number" id="hargaBaru" placeholder="Harga Baru">
+
+  <button onclick="tambahData()">Tambah / Update</button>
+  <a href="chart.html"><button>Lihat Diagram 📊</button></a>
+
+  <table id="tabel"></table>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("dataBarang")) || [];
+
+function render() {
+  let tabel = document.getElementById("tabel");
+
+  tabel.innerHTML = `
+    <tr>
+      <th>Nama</th>
+      <th>Harga Awal</th>
+      <th>Harga Baru</th>
+      <th>Selisih</th>
+    </tr>
+  `;
+
+  data.forEach((item, index) => {
+    let selisih = item.hargaBaru - item.hargaAwal;
+
+    tabel.innerHTML += `
+      <tr style="animation: fadeIn 0.5s ease">
+        <td>${item.nama}</td>
+        <td>${item.hargaAwal}</td>
+        <td>${item.hargaBaru}</td>
+        <td>${selisih}</td>
+      </tr>
+    `;
+  });
+}
+
+function tambahData() {
+  let nama = document.getElementById("nama").value;
+  let hargaAwal = parseInt(document.getElementById("hargaAwal").value);
+  let hargaBaru = parseInt(document.getElementById("hargaBaru").value);
+
+  let index = data.findIndex(d => d.nama === nama);
+
+  if (index >= 0) {
+    data[index].hargaBaru = hargaBaru;
+  } else {
+    data.push({ nama, hargaAwal, hargaBaru });
+  }
+
+  localStorage.setItem("dataBarang", JSON.stringify(data));
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
+```
