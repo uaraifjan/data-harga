@@ -1,0 +1,63 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Diagram Harga</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>📊 Diagram Selisih Harga</h2>
+  <canvas id="chart"></canvas>
+  <br>
+  <a href="index.html"><button>Kembali</button></a>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("dataBarang")) || [];
+
+let bubbleData = data.map((item, i) => {
+  let selisih = item.hargaBaru - item.hargaAwal;
+
+  return {
+    label: item.nama,
+    data: [{
+      x: i + 1,
+      y: selisih,
+      r: Math.abs(selisih) / 10 + 8
+    }]
+  };
+});
+
+new Chart(document.getElementById("chart"), {
+  type: 'bubble',
+  data: {
+    datasets: bubbleData
+  },
+  options: {
+    animation: {
+      duration: 1500
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) {
+            return ctx.dataset.label + " (Selisih: " + ctx.raw.y + ")";
+          }
+        }
+      }
+    },
+    scales: {
+      x: { title: { display: true, text: "Item" }},
+      y: { title: { display: true, text: "Selisih Harga" }}
+    }
+  }
+});
+</script>
+
+</body>
+</html>
+```
